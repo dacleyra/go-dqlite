@@ -72,8 +72,11 @@ func New(id uint64, address string, dir string, options ...Option) (*Node, error
 	}
 	if o.BindAddress != "" {
 		// Ensure a hostname is resolved to IP address before given to SetBindAddress
-		port := net.SplitHostPort(o.BindAddress)
-		bindAddressIPAddr, err := net.ResolveIPAddr("tcp", o.BindAddress)
+		host, port, err := net.SplitHostPort(o.BindAddress)
+		if err != nil {
+			return nil, err
+		}
+		bindAddressIPAddr, err := net.ResolveIPAddr("tcp", host)
 		if err != nil {
 			return nil, err
 		}
