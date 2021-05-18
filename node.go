@@ -76,7 +76,7 @@ func New(id uint64, address string, dir string, options ...Option) (*Node, error
 		if err != nil {
 			return nil, err
 		}
-		bindAddressIPAddr, err := net.ResolveIPAddr("tcp", host)
+		bindAddressIPAddr, err := net.ResolveIPAddr("ip", host)
 		if err != nil {
 			return nil, err
 		}
