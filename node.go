@@ -76,14 +76,20 @@ func New(id uint64, address string, dir string, options ...Option) (*Node, error
 		if err != nil {
 			return nil, err
 		}
-		bindAddressIPAddr, err := net.ResolveIPAddr("ip", host)
+
+		addrs, err := net.LookupHost(host)
 		if err != nil {
 			return nil, err
 		}
-		bindAddress := net.JoinHostPort(bindAddressIPAddr.String(), port)
 
-		if err := server.SetBindAddress(bindAddress); err != nil {
-			return nil, err
+		if len(addrs) == 0 {
+			if err := server.SetBindAddress(o.BindAddress); err != nil {
+				return nil, err
+			}
+		} else {
+			if err := server.SetBindAddress(net.JoinHostPort(addrs[0], port)); err != nil {
+				return nil, err
+			}
 		}
 	}
 	if o.NetworkLatency != 0 {
